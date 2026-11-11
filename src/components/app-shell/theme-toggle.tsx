@@ -1,15 +1,8 @@
 "use client";
 
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useLayoutEffect, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useI18n } from "@/i18n/client";
 import { applyTheme, readTheme, type Theme, THEME_STORAGE_KEY } from "@/lib/theme";
 
@@ -27,12 +20,11 @@ function subscribe(listener: () => void) {
 }
 
 export function useTheme(): [Theme, (theme: Theme) => void] {
-  const theme = useSyncExternalStore(subscribe, readTheme, () => "system" as Theme);
+  const theme = useSyncExternalStore(subscribe, readTheme, () => "light" as Theme);
 
   function setTheme(next: Theme) {
     try {
-      if (next === "system") localStorage.removeItem(THEME_STORAGE_KEY);
-      else localStorage.setItem(THEME_STORAGE_KEY, next);
+      localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {
       // Storage blocked (private mode): the theme still applies for this page view
     }
@@ -43,7 +35,8 @@ export function useTheme(): [Theme, (theme: Theme) => void] {
   return [theme, setTheme];
 }
 
-export function ThemeToggle() {
+/** One button: a sun in light mode, a moon in dark mode; each click switches. */
+export function ThemeToggle({ className }: { className?: string }) {
   const [theme, setTheme] = useTheme();
   const { t } = useI18n();
 
@@ -51,28 +44,18 @@ export function ThemeToggle() {
   useLayoutEffect(() => applyTheme(), []);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
-        <Sun className="dark:hidden" aria-hidden />
-        <Moon className="hidden dark:block" aria-hidden />
-        <span className="sr-only">{t("theme.change")}</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-36">
-        <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(value as Theme)}>
-          <DropdownMenuRadioItem closeOnClick value="light">
-            <Sun aria-hidden />
-            {t("theme.light")}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem closeOnClick value="dark">
-            <Moon aria-hidden />
-            {t("theme.dark")}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem closeOnClick value="system">
-            <Monitor aria-hidden />
-            {t("theme.system")}
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="ghost"
+      size="icon"
+      className={className}
+      aria-pressed={theme === "dark"}
+      title={t("theme.darkMode")}
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    >
+      {/* The icon follows the <html> class, so it's right before React hydrates */}
+      <Sun className="dark:hidden" aria-hidden />
+      <Moon className="hidden dark:block" aria-hidden />
+      <span className="sr-only">{t("theme.darkMode")}</span>
+    </Button>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { UserMenu } from "@/components/app-shell/user-menu";
 import { LanguageSwitcher } from "@/components/app-shell/language-switcher";
+import { ThemeToggle } from "@/components/app-shell/theme-toggle";
 import { Logo } from "@/components/app-shell/logo";
 import {
   MobileNav,
@@ -19,7 +20,7 @@ import { cn } from "@/lib/utils";
 /**
  * Header of the public pages: full width and see-through, with a soft white curved
  * shape behind the logo and links. It scrolls away with the page (a see-through bar
- * can't sit over content). The theme toggle lives on the sign-in and account pages.
+ * can't sit over content).
  */
 export async function SiteHeader() {
   const { locale } = await getI18n();
@@ -37,13 +38,14 @@ export async function SiteHeader() {
           href={localePath(locale, "/")}
           compactOnMobile
           subtitle="Phnom Penh"
-          className="mr-2 text-lg lg:mr-6"
+          className="mr-1 text-lg sm:mr-2 lg:mr-6"
         />
         <Suspense fallback={<PublicNavLinks pathname={null} />}>
           <PublicNav />
         </Suspense>
         <div className="flex-1" />
-        <LanguageSwitcher className="h-10 rounded-full bg-slate-100 px-3 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15" />
+        <LanguageSwitcher className="h-10 rounded-full bg-slate-100 px-3 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 lg:dark:bg-slate-900/85 lg:dark:hover:bg-slate-800" />
+        <ThemeToggle className="size-9 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 sm:size-10 dark:bg-white/10 dark:hover:bg-white/15 lg:dark:bg-slate-900/85 lg:dark:hover:bg-slate-800" />
         <Suspense fallback={<Skeleton className="h-10 w-24 rounded-full" />}>
           <AccountArea />
         </Suspense>
@@ -68,7 +70,7 @@ async function AccountArea() {
         className={buttonVariants({
           variant: "ghost",
           className:
-            "text-primary hover:text-primary h-10 bg-sky-100 px-4 font-semibold hover:bg-sky-200 sm:px-5 dark:bg-sky-500/15 dark:text-sky-300 dark:hover:bg-sky-500/25",
+            "text-primary hover:text-primary h-10 bg-sky-100 px-3 font-semibold hover:bg-sky-200 sm:px-5 dark:bg-sky-500/15 dark:text-sky-300 dark:hover:bg-sky-500/25 lg:dark:bg-slate-900/85 lg:dark:hover:bg-slate-800",
         })}
       >
         {t("nav.login")}
@@ -77,7 +79,7 @@ async function AccountArea() {
         href={localePath(locale, "/register")}
         className={cn(
           buttonVariants(),
-          "h-10 bg-blue-900 px-4 font-semibold text-white shadow-md shadow-blue-950/25 hover:bg-blue-950 sm:px-5 dark:bg-sky-400 dark:text-slate-950 dark:hover:bg-sky-300",
+          "h-10 bg-blue-900 px-3 font-semibold text-white shadow-md shadow-blue-950/25 hover:bg-blue-950 sm:px-5 dark:bg-sky-400 dark:text-slate-950 dark:hover:bg-sky-300",
         )}
       >
         {t("nav.signup")}

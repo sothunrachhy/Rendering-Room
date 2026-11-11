@@ -51,7 +51,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
       >
         <CurrentFlag className={flagClass} />
         <span className="hidden text-sm font-medium sm:inline">{LOCALE_NAMES[locale]}</span>
-        <ChevronDown className="text-muted-foreground size-3.5" aria-hidden />
+        {/* Phones: just the flag, the header is full */}
+        <ChevronDown className="text-muted-foreground hidden size-3.5 sm:block" aria-hidden />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
         <DropdownMenuRadioGroup value={locale} onValueChange={(value) => switchTo(value as Locale)}>

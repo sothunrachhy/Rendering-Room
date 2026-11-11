@@ -113,7 +113,7 @@ export default async function Home() {
             </p>
             <div
               id="hero-search"
-              className="relative rounded-3xl bg-white p-2.5 shadow-xl shadow-blue-950/10 dark:bg-slate-900 dark:shadow-black/40"
+              className="relative rounded-3xl bg-white p-2 shadow-xl shadow-blue-950/10 dark:bg-slate-900 dark:shadow-black/40"
             >
               <Suspense fallback={<Skeleton className="h-16 w-full rounded-2xl" />}>
                 <HeroSearchLoader />

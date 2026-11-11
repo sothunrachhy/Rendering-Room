@@ -31,10 +31,7 @@ const en = {
     switchTo: "Switch to {language}",
   },
   theme: {
-    change: "Change theme",
-    light: "Light",
-    dark: "Dark",
-    system: "System",
+    darkMode: "Dark mode",
   },
   nav: {
     home: "Home",

@@ -70,7 +70,7 @@ export function HeroSearch({ campuses }: { campuses: CampusOption[] }) {
       <Button
         type="submit"
         size="lg"
-        className="bg-primary hover:bg-primary/90 h-auto min-h-14 px-5 text-base font-semibold text-white shadow-lg shadow-blue-700/30 sm:col-span-3 xl:col-span-1 dark:bg-sky-400 dark:text-slate-950 dark:hover:bg-sky-300"
+        className="bg-primary hover:bg-primary/90 h-auto min-h-12 px-5 text-base font-semibold text-white shadow-lg shadow-blue-700/30 sm:col-span-3 xl:col-span-1 dark:bg-sky-400 dark:text-slate-950 dark:hover:bg-sky-300"
       >
         <Search className="size-5" aria-hidden />
         {t("landing.searchButton")}
@@ -95,7 +95,7 @@ function Field({
   children: ReactNode;
 }) {
   return (
-    <div className="focus-within:ring-ring/40 grid min-w-0 gap-0.5 rounded-2xl bg-slate-100 px-3.5 py-2.5 transition-colors focus-within:ring-3 hover:bg-slate-200/70 dark:bg-white/5 dark:hover:bg-white/10">
+    <div className="focus-within:ring-ring/40 grid min-w-0 gap-0.5 rounded-xl bg-slate-100 px-3 py-2 transition-colors focus-within:ring-3 hover:bg-slate-200/70 dark:bg-white/5 dark:hover:bg-white/10">
       <label
         id={`${id}-label`}
         htmlFor={id}

@@ -32,10 +32,7 @@ const km = {
     switchTo: "ប្ដូរទៅ {language}",
   },
   theme: {
-    change: "ប្ដូររូបរាង",
-    light: "ភ្លឺ",
-    dark: "ងងឹត",
-    system: "តាមប្រព័ន្ធ",
+    darkMode: "របៀបងងឹត",
   },
   nav: {
     home: "ទំព័រដើម",

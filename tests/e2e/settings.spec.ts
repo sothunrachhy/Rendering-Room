@@ -45,17 +45,21 @@ test("profile, password change and account deletion", async ({ page }) => {
 });
 
 test("theme choice is remembered across reloads", async ({ page }) => {
-  // The toggle is on the account pages (signed in), e.g. a student's saved rooms
-  await logIn(page, "dara");
-  await page.goto("/en/saved");
-  await page.getByRole("button", { name: "Change theme" }).click();
-  await page.getByRole("menuitemradio", { name: "Dark" }).click();
+  // The toggle is in every page's header; one click switches light ↔ dark
+  await page.goto("/en/rooms");
+  const toggle = page.getByRole("button", { name: "Dark mode" });
+  await expect(page.locator("html")).not.toHaveClass(/dark/);
+  await toggle.click();
   await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
 
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
 
-  await page.getByRole("button", { name: "Change theme" }).click();
-  await page.getByRole("menuitemradio", { name: "Light" }).click();
+  // Same choice on the signed-in pages
+  await logIn(page, "dara");
+  await page.goto("/en/saved");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.getByRole("button", { name: "Dark mode" }).click();
   await expect(page.locator("html")).not.toHaveClass(/dark/);
 });
