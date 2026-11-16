@@ -3,7 +3,6 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { after } from "next/server";
 import { type Role, users } from "@/db/schema";
 import { type Locale, localePath } from "@/i18n/config";
 import { getRequestI18n } from "@/i18n/request";
@@ -13,22 +12,7 @@ import { fieldErrors, type FormState, formValues } from "@/lib/form-state";
 import { HOME_PATHS } from "@/lib/roles";
 import { createSession, deleteSession } from "@/server/session";
 import { loginSchema, registerSchema } from "@/lib/validation";
-import { sendVerificationEmail } from "@/server/email-verification";
 import { clearAttempts, clientIp, LIMITS, recordAttempt, retryAfter } from "@/server/rate-limit";
-import type { ActionResult } from "@/server/actions/types";
-import { requireUser } from "@/server/auth";
-
-/** "Send the link again" for users who haven't confirmed their email yet. */
-export async function resendVerificationEmail(): Promise<ActionResult> {
-  const user = await requireUser();
-  const { locale, t } = await getRequestI18n();
-  if (user.emailVerified) return { ok: true, message: t("verifyEmail.confirmedTitle") };
-
-  const sent = await sendVerificationEmail(user, locale, t);
-  return sent
-    ? { ok: true, message: t("messages.verificationSent", { email: user.email }) }
-    : { ok: false, message: t("messages.verificationTooMany") };
-}
 
 const BCRYPT_ROUNDS = 12;
 
@@ -70,16 +54,6 @@ export async function register(_prev: FormState, formData: FormData): Promise<Fo
     throw error;
   }
   await recordAttempt(ipKey);
-
-  // "Confirm your email" link, sent after the response so sign-up stays fast
-  const welcome = { id: userId, name: profile.name, email: profile.email };
-  after(async () => {
-    try {
-      await sendVerificationEmail(welcome, locale, t);
-    } catch (error) {
-      console.error("Verification email failed", error);
-    }
-  });
 
   await createSession(userId);
   // New landlords start on their rooms page, which explains verification

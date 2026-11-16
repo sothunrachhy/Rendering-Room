@@ -8,7 +8,6 @@ import { MarketingBackground } from "@/components/landing/marketing-background";
 import { ThemeToggle } from "@/components/app-shell/theme-toggle";
 import { SiteFooter } from "@/components/app-shell/site-footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { VerifyEmailBanner } from "@/components/app-shell/verify-email-banner";
 import { localePath } from "@/i18n/config";
 import { getI18n } from "@/i18n/server";
 import { getCurrentUser } from "@/server/auth";
@@ -40,12 +39,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <CurrentUserMenu />
           </Suspense>
         </header>
-        <main className="flex-1 px-4 py-6 md:px-8">
-          <Suspense>
-            <VerifyEmailBanner className="mb-6" />
-          </Suspense>
-          {children}
-        </main>
+        <main className="flex-1 px-4 py-6 md:px-8">{children}</main>
         <SiteFooter compact />
       </div>
     </div>

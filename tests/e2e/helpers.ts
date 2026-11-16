@@ -55,13 +55,6 @@ export async function latestEmailLink(to: string, pattern: RegExp): Promise<stri
   return (await links()).at(-1)!;
 }
 
-/** Opens the link from the welcome email, as a new user would. */
-export async function confirmEmail(page: Page, email: string) {
-  const link = await latestEmailLink(email, /https?:\/\/\S+\/api\/verify-email\?\S+/);
-  await page.goto(link);
-  await expect(page.getByText("Email confirmed")).toBeVisible();
-}
-
 /** Logs in with a seeded account, e.g. logIn(page, "sokha"). */
 export async function logIn(
   page: Page,

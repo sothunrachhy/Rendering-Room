@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
-import { confirmEmail, logIn, registerNewUser } from "./helpers";
+import { logIn, registerNewUser } from "./helpers";
 
 // The whole life of a listing, across three people: a landlord posts a room and gets
 // verified, a student asks to see it and reviews it, and an admin acts on a report.
@@ -105,7 +105,7 @@ test("the room stays hidden from students until an admin verifies the landlord",
 
 test("a student saves the room and asks to view it", async () => {
   const page = studentPage;
-  const { email } = await registerNewUser(page, { name: "Student Test" });
+  await registerNewUser(page, { name: "Student Test" });
   await page.goto(roomUrl);
   await page.waitForLoadState("networkidle"); // buttons work once React has loaded
 
@@ -116,13 +116,18 @@ test("a student saves the room and asks to view it", async () => {
   await page.goto("/en/saved");
   await expect(page.getByRole("link", { name: title })).toBeVisible();
 
-  // No viewing requests from unconfirmed email addresses
+  // A new student can reach the landlord at once: Telegram, a call, or a viewing request
+  // (no email confirmation needed)
   await page.goto(roomUrl);
-  await expect(page.getByText(/Confirm your email address/).first()).toBeVisible();
-  await expect(page.getByLabel("Preferred date and time")).toHaveCount(0);
-  await confirmEmail(page, email);
+  await expect(page.getByRole("link", { name: "Message on Telegram" })).toHaveAttribute(
+    "href",
+    "https://t.me/+85512345678",
+  );
+  await expect(page.getByRole("link", { name: "Call 012345678" })).toHaveAttribute(
+    "href",
+    "tel:+85512345678",
+  );
 
-  await page.goto(roomUrl);
   await page.getByLabel("Preferred date and time").fill(phnomPenhInput(3));
   await page.getByLabel("Message").fill("Can I come after class?");
   await page.getByRole("button", { name: "Send request" }).click();

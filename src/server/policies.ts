@@ -44,9 +44,8 @@ export function reportBlock(
 
 /**
  * Why a landlord can't accept a viewing request (QA-04), or null when they can.
- * Accepting shares the landlord's phone number and unlocks a review, so it needs a
- * listed room: not hidden by an admin, from a verified landlord. Declining is always
- * allowed.
+ * Accepting unlocks a review, so it needs a listed room: not hidden by an admin, from a
+ * verified landlord. Declining is always allowed.
  */
 export function acceptBlock(
   room: { hidden: boolean },

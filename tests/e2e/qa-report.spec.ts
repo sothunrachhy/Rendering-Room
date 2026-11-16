@@ -93,7 +93,7 @@ test("#7 the phone hint matches the chosen role", async ({ page }) => {
   await page.goto("/en/register");
   await expect(page.getByText(/Shared with a landlord when you ask to view/)).toBeVisible();
   await page.getByText("Renting out rooms").click();
-  await expect(page.getByText(/Shown to students only after you accept/)).toBeVisible();
+  await expect(page.getByText(/Logged-in students see it on your rooms/)).toBeVisible();
 });
 
 test("#9 #14 cards show the cost with bills, and Khmer pages use Khmer units", async ({ page }) => {

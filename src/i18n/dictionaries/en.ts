@@ -169,7 +169,11 @@ const en = {
     landlord: "Landlord",
     landlordSince: "On RoomFinder since {date}",
     phone: "Phone",
-    phoneHidden: "The phone number is shown after the landlord accepts your viewing request.",
+    phoneHidden: "Log in to see the landlord's phone number and Telegram.",
+    contactLandlord: "Contact the landlord",
+    telegram: "Message on Telegram",
+    call: "Call {phone}",
+    noPhone: "This landlord hasn't added a phone number. Send a viewing request instead.",
     save: "Save",
     saved: "Saved",
     loginToAct: "Log in as a student to save this room, request a viewing or write a review.",
@@ -451,7 +455,7 @@ const en = {
     name: "Full name",
     email: "Email",
     phone: "Phone",
-    phoneHint: "Shown to students only after you accept their viewing request.",
+    phoneHint: "Logged-in students see it on your rooms, to call you or message you on Telegram.",
     phoneHintStudent:
       "Shared with a landlord when you ask to view their room, so they can call you.",
     password: "Password",
@@ -531,10 +535,6 @@ const en = {
       other: "Too many attempts. Try again in {count} minutes.",
     },
     tooManySignups: "Too many new accounts from this network. Try again later.",
-    verifyEmailFirst: "Confirm your email address first. We sent you a link.",
-    verificationSent: "We sent a new link to {email}.",
-    verificationTooMany:
-      "We already sent several links. Check your inbox and spam folder, or try again in an hour.",
     invalidCredentials: "Invalid email or password",
     emailTaken: "An account with this email already exists",
     profileSaved: "Profile saved",
@@ -638,24 +638,13 @@ const en = {
     open: "Open RoomFinder: {url}",
   },
   verifyEmail: {
-    banner:
-      "Confirm your email address: we sent a link to {email}. You can request viewings once it's confirmed.",
-    resend: "Send the link again",
-    needed: "Confirm your email address before requesting a viewing. We sent you a link.",
     confirmedTitle: "Email confirmed",
-    confirmedText: "Thank you. You can now request viewings and get replies from landlords.",
+    confirmedText: "Thank you, your email address is confirmed.",
     invalidTitle: "This link doesn't work",
-    invalidText: "It may have expired or been used already. Send yourself a new one from Settings.",
+    invalidText:
+      "It may have expired or been used already. You don't need it: you can use RoomFinder without confirming your email.",
     goToSettings: "Go to Settings",
     findRoom: "Find a room",
-    mail: {
-      subject: "Confirm your RoomFinder email",
-      greeting: "Hi {name},",
-      body: "Welcome to RoomFinder! Please confirm your email address so landlords know you're a real person:",
-      button: "Confirm my email",
-      expires:
-        "The link works once and expires in 2 days. If you didn't sign up, you can ignore this email.",
-    },
   },
   footer: {
     label: "Footer",
@@ -699,7 +688,7 @@ const en = {
       },
       s2: {
         title: "Who sees what",
-        body: "Room listings, landlords' names and reviews (with the reviewer's name) are public. A landlord sees the name and phone number of each student who asks to view their room. A student sees a landlord's phone number only after the landlord accepts their viewing. ID photos are seen only by RoomFinder admins, never by students.",
+        body: "Room listings, landlords' names and reviews (with the reviewer's name) are public. A landlord sees the name and phone number of each student who asks to view their room. Logged-in users see a landlord's phone number on their rooms, with a link to message them on Telegram. ID photos are seen only by RoomFinder admins, never by students.",
       },
       s3: {
         title: "Services we use",

@@ -56,8 +56,12 @@ test("a room page shows the full monthly cost, distance and reviews", async ({ p
   await expect(page.getByText("500 m from RUPP").first()).toBeVisible();
   await expect(page.getByText("Verified landlord")).toBeVisible();
   await expect(page.getByText("Very close to campus")).toBeVisible();
-  // Phone stays private until a viewing is accepted
-  await expect(page.getByText("012345678")).toHaveCount(0);
+  // Visitors are asked to log in before they see the landlord's phone and Telegram
+  await expect(
+    page.getByText("Log in to see the landlord's phone number and Telegram."),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Message on Telegram" })).toHaveCount(0);
+  await expect(page.getByText(/^Call /)).toHaveCount(0);
   // The map loads in the browser
   // (the search page's map stays mounted but hidden, for an instant Back)
   await expect(page.locator(".leaflet-container:visible")).toBeVisible();

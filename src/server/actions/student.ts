@@ -61,9 +61,6 @@ export async function requestViewing(_prev: FormState, formData: FormData): Prom
   const { locale, t } = await getRequestI18n();
   const values = formValues(formData, ["roomId", "preferredAt", "message"]);
 
-  // Landlords only get requests (and alerts) from confirmed email addresses
-  if (!student.emailVerified) return { message: t("messages.verifyEmailFirst"), values };
-
   const parsed = viewingRequestSchema.safeParse(values);
   if (!parsed.success) return { fieldErrors: fieldErrors(parsed.error, t), values };
 

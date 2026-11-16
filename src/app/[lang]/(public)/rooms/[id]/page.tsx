@@ -8,6 +8,7 @@ import {
   Pencil,
   Phone,
   Ruler,
+  Send,
   Users,
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -26,7 +27,6 @@ import { RatingSummary, Stars } from "@/components/rooms/stars";
 import { ViewingRequestForm } from "@/components/rooms/viewing-request-form";
 import { MarketingBackground } from "@/components/landing/marketing-background";
 import { SiteHeader } from "@/components/app-shell/site-header";
-import { VerifyEmailBanner } from "@/components/app-shell/verify-email-banner";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,8 +35,10 @@ import { languageAlternates, type Locale, localePath } from "@/i18n/config";
 import { getI18n } from "@/i18n/server";
 import type { Translator } from "@/i18n/translator";
 import { type CurrentUser, getOptionalUser } from "@/server/auth";
+import { internationalPhone, telegramLink } from "@/lib/contact";
 import { formatPrice } from "@/lib/money";
 import { haversineKm } from "@/lib/ranking";
+import { cn } from "@/lib/utils";
 import {
   formatDistance,
   parseSearchFilters,
@@ -286,7 +288,13 @@ async function Room({ params, searchParams }: PageProps<"/[lang]/rooms/[id]">) {
 
           <LandlordCard
             room={room}
-            canSeePhone={Boolean(studentState?.hasAcceptedViewing) || isOwner || isAdmin}
+            // Phone and Telegram for anyone logged in; visitors are asked to log in first,
+            // so the numbers aren't open to scrapers
+            loginHref={
+              user
+                ? null
+                : `${localePath(locale, "/login")}?next=${encodeURIComponent(localePath(locale, `/rooms/${room.id}`))}`
+            }
             t={t}
             locale={locale}
           />
@@ -374,11 +382,6 @@ function StudentActions({
             {t("viewing.seeRequests")}
           </Link>
         </div>
-      ) : room.status === "AVAILABLE" && !user.emailVerified ? (
-        <div className="grid gap-2">
-          <h2 className="font-semibold">{t("viewing.title")}</h2>
-          <VerifyEmailBanner />
-        </div>
       ) : room.status === "AVAILABLE" ? (
         <div className="grid gap-2">
           <h2 className="font-semibold">{t("viewing.title")}</h2>
@@ -399,16 +402,19 @@ function StudentActions({
 
 function LandlordCard({
   room,
-  canSeePhone,
+  loginHref,
   t,
   locale,
 }: {
   room: RoomDetail;
-  canSeePhone: boolean;
+  /** Set for visitors: the contact details are behind logging in */
+  loginHref: string | null;
   t: Translator;
   locale: Locale;
 }) {
   const { landlord } = room;
+  const phone = landlord.phone ? internationalPhone(landlord.phone) : null;
+  const telegram = landlord.phone ? telegramLink(landlord.phone) : null;
   return (
     <Card size="sm">
       <CardContent className="grid gap-2 text-sm">
@@ -423,14 +429,46 @@ function LandlordCard({
         <p className="text-muted-foreground">
           {t("room.landlordSince", { date: formatDate(landlord.createdAt, locale) })}
         </p>
-        {canSeePhone && landlord.phone ? (
-          <a href={`tel:${landlord.phone}`} className="flex items-center gap-1.5 font-medium">
-            <Phone className="size-4" aria-hidden />
-            {landlord.phone}
-          </a>
-        ) : (
-          <p className="text-muted-foreground text-xs">{t("room.phoneHidden")}</p>
-        )}
+        <div id="contact" className="mt-1 grid scroll-mt-6 gap-2 border-t pt-3">
+          <p className="font-semibold">{t("room.contactLandlord")}</p>
+          {loginHref ? (
+            <>
+              <p className="text-muted-foreground text-xs">{t("room.phoneHidden")}</p>
+              <Link href={loginHref} className={buttonVariants({ variant: "outline" })}>
+                {t("room.loginButton")}
+              </Link>
+            </>
+          ) : phone && landlord.phone ? (
+            <>
+              {telegram && (
+                <a
+                  href={telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants(),
+                    "h-10 bg-[#229ed9] text-white hover:bg-[#1c8cc2] dark:bg-[#229ed9] dark:text-white",
+                  )}
+                >
+                  <Send aria-hidden />
+                  {t("room.telegram")}
+                </a>
+              )}
+              <a
+                href={`tel:${phone}`}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "h-10 border-slate-300 dark:border-white/15",
+                )}
+              >
+                <Phone aria-hidden />
+                {t("room.call", { phone: landlord.phone })}
+              </a>
+            </>
+          ) : (
+            <p className="text-muted-foreground text-xs">{t("room.noPhone")}</p>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

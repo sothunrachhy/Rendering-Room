@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
         <I18nProvider locale={locale} dictionary={dictionary}>
           {children}
           {/* Top centre, under the header: never covers buttons or cards at the bottom */}
-          <Toaster richColors closeButton position="top-center" offset={72} />
+          <Toaster closeButton position="top-center" offset={72} />
         </I18nProvider>
       </body>
     </html>
