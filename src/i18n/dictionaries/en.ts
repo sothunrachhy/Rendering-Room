@@ -88,6 +88,7 @@ const en = {
       privateBath: "Private bath",
       sharedBath: "Shared bath",
       wifi: "Wi-Fi",
+      photos: { one: "{count} photo", other: "{count} photos" },
     },
     cta: {
       title: "Find your ideal room near your university today!",

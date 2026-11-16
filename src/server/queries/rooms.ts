@@ -58,6 +58,10 @@ const coverPhotoId = sql<string | null>`(
   limit 1
 )`;
 
+const photoCount = sql<number>`(
+  select count(*)::int from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id}
+)`;
+
 /** Rooms students may see: not hidden by an admin, from a verified landlord. */
 const publiclyVisible = and(eq(rooms.hidden, false), eq(users.verification, "VERIFIED"));
 
@@ -78,6 +82,7 @@ const cardColumns = {
   avgRating: ratings.avgRating,
   reviewCount: sql<number>`coalesce(${ratings.reviewCount}, 0)`,
   coverPhotoId,
+  photoCount,
 };
 
 export type RoomCard = {
@@ -97,6 +102,7 @@ export type RoomCard = {
   avgRating: number | null;
   reviewCount: number;
   coverPhotoId: string | null;
+  photoCount: number;
 };
 
 export type RankedRoom = RoomCard & { distanceKm: number; score: number };

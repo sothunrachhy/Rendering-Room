@@ -11,3 +11,13 @@ angkor-wat.jpg is used resized, cropped and faded into the page. Its licence ask
 credit to the author with a link to the licence
 (https://creativecommons.org/licenses/by-sa/4.0/). Before a public launch, show this
 credit on the site too (for example on the About page).
+
+# Room card decorations (`decorations/`)
+
+| File             | Shows                              | Source                                                       |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------ |
+| angkor-gold.png  | Gold Angkor Wat silhouette         | Provided by the RoomFinder team; white background removed    |
+| khmer-corner.png | Gold Khmer corner ornament (kbach) | Provided by the RoomFinder team; one corner of a border, cut |
+
+Both look like stock artwork. Before a public launch, check the licence of the original
+files (where they were downloaded from) and add any credit it asks for here.

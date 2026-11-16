@@ -270,7 +270,8 @@ async function Room({ params, searchParams }: PageProps<"/[lang]/rooms/[id]">) {
             </CardContent>
           </Card>
 
-          <Card>
+          {/* #viewing: the home page's "Request a viewing" buttons land here */}
+          <Card id="viewing" className="scroll-mt-6">
             <CardContent className="grid gap-4">
               <StudentActions
                 room={room}

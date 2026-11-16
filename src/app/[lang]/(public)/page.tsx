@@ -1,16 +1,16 @@
-import { ArrowRight, Bath, BedDouble, Footprints, GraduationCap, Wifi } from "lucide-react";
+import { ArrowRight, GraduationCap } from "lucide-react";
 import type { Metadata } from "next";
 import { Caveat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
 import angkorWat from "@/assets/angkor-wat.jpg";
+import khmerCorner from "@/assets/decorations/khmer-corner.png";
 import heroImage from "@/assets/hero-students.jpg";
 import { FloatingContact } from "@/components/landing/floating-contact";
 import { HeroSearch } from "@/components/landing/hero-search";
+import { TopRoomCard } from "@/components/landing/top-room-card";
 import { UniversityStrip } from "@/components/landing/university-strip";
-import { HeartButton } from "@/components/rooms/heart-button";
-import { RoomPhoto } from "@/components/rooms/room-photo";
 import { SiteFooter } from "@/components/app-shell/site-footer";
 import { SiteHeader } from "@/components/app-shell/site-header";
 import { buttonVariants } from "@/components/ui/button";
@@ -19,8 +19,7 @@ import { languageAlternates, localePath } from "@/i18n/config";
 import { getI18n } from "@/i18n/server";
 import { withLinks } from "@/i18n/with-links";
 import { getOptionalUser } from "@/server/auth";
-import { formatPrice } from "@/lib/money";
-import { parseSearchFilters, SEARCH_DEFAULTS, searchQuery, textLanguage } from "@/lib/rooms";
+import { parseSearchFilters, SEARCH_DEFAULTS, searchQuery } from "@/lib/rooms";
 import { cn } from "@/lib/utils";
 import { getCampuses, getSavedRoomIds, searchRooms } from "@/server/queries/rooms";
 
@@ -42,13 +41,14 @@ const fadeLeftAndBottom: CSSProperties = {
     "linear-gradient(to right, transparent, black 14%), linear-gradient(to top, transparent, black 22%)",
   WebkitMaskComposite: "source-in",
 };
+// The Angkor Wat photo at the bottom of the "Start searching" card blends into the navy
+const fadeUp: CSSProperties = {
+  maskImage: "linear-gradient(to top, black 50%, transparent)",
+  WebkitMaskImage: "linear-gradient(to top, black 50%, transparent)",
+};
 const fadeTopAndBottom: CSSProperties = {
   maskImage: "linear-gradient(to bottom, transparent, black 18%, black 70%, transparent)",
   WebkitMaskImage: "linear-gradient(to bottom, transparent, black 18%, black 70%, transparent)",
-};
-const fadeUp: CSSProperties = {
-  maskImage: "linear-gradient(to top, black 45%, transparent)",
-  WebkitMaskImage: "linear-gradient(to top, black 45%, transparent)",
 };
 
 export default async function Home() {
@@ -223,7 +223,7 @@ async function TopRooms() {
             campus: (
               <span className="text-primary relative inline-block dark:text-sky-300">
                 {campus.shortName}
-                <Swoosh className="absolute -bottom-2.5 left-0 h-3 w-full text-blue-500" />
+                <Swoosh className="text-primary absolute -bottom-2.5 left-0 h-3 w-full dark:text-sky-300" />
               </span>
             ),
           })}
@@ -249,98 +249,73 @@ async function TopRooms() {
       </div>
 
       {rooms.map((room) => {
-        const minutes = Math.max(1, Math.round((room.distanceKm * 1000) / 80));
-        const privateBath = room.facilities.includes("privateBathroom");
         const roomHref = localePath(locale, `/rooms/${room.id}${query}`);
         return (
-          <article
+          <TopRoomCard
             key={room.id}
-            className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 shadow-blue-950/5 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-xl motion-reduce:hover:translate-y-0 dark:bg-slate-900 dark:ring-white/10"
-          >
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <RoomPhoto
-                photoId={room.coverPhotoId}
-                alt={t("room.photoAlt", { number: 1, title: room.title })}
-                placeholderLabel={t("room.noPhotos")}
-                className="size-full transition-transform duration-300 group-hover:scale-[1.03]"
-              />
-              <span className="bg-primary absolute top-2.5 left-2.5 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-md">
-                <Footprints className="size-3.5" aria-hidden />
-                {t("landing.topRooms.walk", { minutes, campus: campus.shortName })}
-              </span>
-              {/* Landlords and admins can't save rooms: no heart for them */}
-              {(user === null || savedIds) && (
-                <HeartButton
-                  roomId={room.id}
-                  saved={savedIds ? savedIds.has(room.id) : null}
-                  loginHref={`${localePath(locale, "/login")}?next=${encodeURIComponent(roomHref)}`}
-                  className="absolute! top-2.5 right-2.5"
-                />
-              )}
-            </div>
-            <div className="flex flex-1 flex-col gap-1.5 p-3.5">
-              <h3 lang={textLanguage(room.title)} className="truncate font-semibold">
-                {/* The whole card opens the room */}
-                <Link href={roomHref} className="after:absolute after:inset-0">
-                  {room.title}
-                </Link>
-              </h3>
-              {/* The page language's price format, as on every other page (QA-07) */}
-              <p className="text-primary text-2xl font-bold dark:text-sky-300">
-                {formatPrice(room.rentCents, locale)}
-                <span className="text-muted-foreground ml-1 text-sm font-medium">
-                  {t("room.perMonth")}
-                </span>
-              </p>
-              {/* Wraps instead of clipping (QA 3 #8); sits at the card's bottom so cards line up */}
-              <ul className="text-muted-foreground mt-auto flex flex-wrap gap-x-3 gap-y-1 pt-1 text-xs">
-                <li className="flex items-center gap-1 whitespace-nowrap">
-                  <BedDouble className="text-primary size-4 dark:text-sky-300" aria-hidden />
-                  {t(`roomTypes.${room.type}`)}
-                </li>
-                <li className="flex items-center gap-1 whitespace-nowrap">
-                  <Bath className="text-primary size-4 dark:text-sky-300" aria-hidden />
-                  {privateBath
-                    ? t("landing.topRooms.privateBath")
-                    : t("landing.topRooms.sharedBath")}
-                </li>
-                {room.facilities.includes("wifi") && (
-                  <li className="flex items-center gap-1 whitespace-nowrap">
-                    <Wifi className="text-primary size-4 dark:text-sky-300" aria-hidden />
-                    {t("landing.topRooms.wifi")}
-                  </li>
-                )}
-              </ul>
-            </div>
-          </article>
+            room={room}
+            campusName={campus.shortName}
+            href={roomHref}
+            // Landlords and admins can't save rooms: no heart for them
+            heart={
+              user === null || savedIds
+                ? {
+                    saved: savedIds ? savedIds.has(room.id) : null,
+                    loginHref: `${localePath(locale, "/login")}?next=${encodeURIComponent(roomHref)}`,
+                  }
+                : null
+            }
+            t={t}
+            locale={locale}
+          />
         );
       })}
 
-      <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-3xl bg-linear-to-b from-blue-600 to-blue-800 px-5 pt-7 pb-20 text-center text-white shadow-lg shadow-blue-950/20 md:col-span-3 lg:col-span-1">
-        <span className="flex size-14 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/30">
+      {/* Navy and gold, like the room cards beside it */}
+      <div className="relative flex flex-col items-center overflow-hidden rounded-[22px] bg-linear-to-b from-[#1646a0] to-[#0f2d68] px-5 pt-8 text-center text-white shadow-[0_10px_30px_rgb(16_45_104/0.18)] ring-1 ring-[#d6ad60]/45 md:col-span-3 lg:col-span-1">
+        {/* Khmer corner ornaments (the bottom-left one, mirrored into the top corners) */}
+        <Image
+          src={khmerCorner}
+          alt=""
+          sizes="80px"
+          className="pointer-events-none absolute top-0 left-0 h-auto w-20 -scale-y-100 opacity-45"
+        />
+        <Image
+          src={khmerCorner}
+          alt=""
+          sizes="80px"
+          className="pointer-events-none absolute top-0 right-0 h-auto w-20 -scale-100 opacity-45"
+        />
+
+        <span className="relative flex size-14 items-center justify-center rounded-full bg-white/10 text-[#f0cd84] ring-2 ring-[#d6ad60]/70">
           <GraduationCap className="size-7" aria-hidden />
         </span>
-        <p className="text-lg leading-snug font-bold">{t("landing.cta.title")}</p>
+        <span aria-hidden className="relative mt-4 h-0.5 w-10 rounded-full bg-[#d6ad60]" />
+        <p className="relative mt-4 text-lg leading-snug font-bold">{t("landing.cta.title")}</p>
         <Link
           href={moreHref}
-          className="text-primary relative flex h-11 items-center justify-center gap-1.5 rounded-full bg-white px-4 text-sm font-semibold whitespace-nowrap shadow-md transition hover:bg-sky-50"
+          className="relative mt-5 flex h-11 items-center justify-center gap-1.5 rounded-full bg-linear-to-b from-[#f3d690] to-[#d6ad60] px-5 text-sm font-bold whitespace-nowrap text-[#0f2d68] shadow-lg shadow-black/25 transition hover:brightness-105"
         >
           {t("landing.cta.button")}
           <ArrowRight className="size-4" aria-hidden />
         </Link>
-        {/* A real photo of Angkor Wat at sunrise, fading up into the card */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-28"
-          style={fadeUp}
-        >
-          <Image
-            src={angkorWat}
-            alt=""
-            fill
-            sizes="260px"
-            className="object-cover object-[50%_42%] opacity-90"
-          />
+
+        {/* A real photo of Angkor Wat at sunrise, fading softly up into the card. The strip
+            grows with the card's width (wide on phones and tablets) and shows the sky and
+            towers, not the dark ground below them */}
+        <div aria-hidden className="pointer-events-none -mx-5 mt-auto self-stretch pt-4">
+          <div
+            className="relative aspect-[13/5] max-h-48 w-full sm:max-h-60 lg:aspect-auto lg:h-40"
+            style={fadeUp}
+          >
+            <Image
+              src={angkorWat}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 260px, 100vw"
+              className="object-cover object-top sm:object-[50%_14%] lg:object-top"
+            />
+          </div>
         </div>
       </div>
     </section>

@@ -63,8 +63,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  /* Brand blue (#2563eb), one blue for every page (QA 3 #2): white text on it is 5.2:1 */
-  --primary: oklch(0.546 0.245 262.881);
+  /* Brand dark blue (#1646a0, the room cards' blue), one blue for every page (QA 3 #2):
+     white text on it is 8.7:1 */
+  --primary: #1646a0;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);

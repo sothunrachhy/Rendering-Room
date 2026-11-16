@@ -3,7 +3,7 @@ import { universityLogo } from "@/lib/university-logos";
 import { cn } from "@/lib/utils";
 
 // Fallback colours for campuses without a logo, picked from the slug so each keeps its own
-const TONES = ["bg-blue-600", "bg-rose-600", "bg-emerald-600", "bg-amber-500", "bg-violet-600"];
+const TONES = ["bg-primary", "bg-rose-600", "bg-emerald-600", "bg-amber-500", "bg-violet-600"];
 
 /** A campus's logo in a white circle, or its initials when we have no logo. Decorative. */
 export function UniversityBadge({
