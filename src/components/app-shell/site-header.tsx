@@ -38,7 +38,7 @@ export async function SiteHeader() {
           href={localePath(locale, "/")}
           compactOnMobile
           subtitle="Phnom Penh"
-          className="mr-1 text-lg sm:mr-2 lg:mr-6"
+          className="mr-1 text-xl sm:mr-2 lg:mr-6"
         />
         <Suspense fallback={<PublicNavLinks pathname={null} />}>
           <PublicNav />

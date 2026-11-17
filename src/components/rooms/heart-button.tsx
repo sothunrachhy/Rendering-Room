@@ -20,12 +20,15 @@ export function HeartButton({
   saved,
   loginHref,
   className,
+  iconClassName,
 }: {
   roomId: string;
   /** null: not logged in as a student */
   saved: boolean | null;
   loginHref: string;
   className?: string;
+  /** The heart's size, e.g. bigger on the home page cards */
+  iconClassName?: string;
 }) {
   const { t } = useI18n();
   const [optimisticSaved, setOptimisticSaved] = useOptimistic(saved ?? false);
@@ -34,7 +37,7 @@ export function HeartButton({
   if (saved === null) {
     return (
       <Link href={loginHref} className={cn(circle, className)}>
-        <Heart className="size-[18px]" aria-hidden />
+        <Heart className={cn("size-[18px]", iconClassName)} aria-hidden />
         <span className="sr-only">{t("room.save")}</span>
       </Link>
     );
@@ -57,7 +60,10 @@ export function HeartButton({
       aria-pressed={optimisticSaved}
       className={cn(circle, optimisticSaved && "text-rose-500", className)}
     >
-      <Heart className={cn("size-[18px]", optimisticSaved && "fill-current")} aria-hidden />
+      <Heart
+        className={cn("size-[18px]", optimisticSaved && "fill-current", iconClassName)}
+        aria-hidden
+      />
       <span className="sr-only">{t("room.save")}</span>
     </button>
   );

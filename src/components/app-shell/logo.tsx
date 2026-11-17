@@ -1,24 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
+import mark from "@/assets/brand/uni-room-mark.png";
 import { cn } from "@/lib/utils";
 
-/** The RoomFinder mark: a blue map pin with a small house in it. */
+/** The Uni-Room mark: a navy map pin with a house, Angkor Wat and a gold swoosh. */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 40" className={cn("h-9 w-auto shrink-0", className)} aria-hidden>
-      <path
-        d="M16 1.5C8.3 1.5 2.5 7.3 2.5 15c0 10.2 13.5 23.5 13.5 23.5S29.5 25.2 29.5 15C29.5 7.3 23.7 1.5 16 1.5Z"
-        className="fill-primary dark:fill-sky-400"
-      />
-      {/* A lighter left half gives the pin some depth */}
-      <path
-        d="M16 1.5C8.3 1.5 2.5 7.3 2.5 15c0 10.2 13.5 23.5 13.5 23.5Z"
-        className="fill-[#2f63c8] dark:fill-sky-300"
-      />
-      <path
-        d="M9.5 15.8 16 10.2l6.5 5.6V23a1 1 0 0 1-1 1h-3.7v-4.6h-3.6V24h-3.7a1 1 0 0 1-1-1Z"
-        fill="white"
-      />
-    </svg>
+    <Image
+      src={mark}
+      alt=""
+      priority
+      sizes="48px"
+      className={cn("h-12 w-auto shrink-0", className)}
+    />
   );
 }
 
@@ -41,14 +35,12 @@ export function Logo({
       className={cn("flex shrink-0 items-center gap-2 font-bold whitespace-nowrap", className)}
     >
       <LogoMark />
-      {/* Brand name: the same in every language */}
-      <span
-        className={cn(
-          "text-[#0b2a5b] dark:text-white",
-          compactOnMobile && "sr-only sm:not-sr-only",
-        )}
-      >
-        <span className="block leading-tight">RoomFinder</span>
+      {/* Brand name: the same in every language. "Uni-" navy, "Room" gold, as in the logo */}
+      <span className={cn(compactOnMobile && "sr-only sm:not-sr-only")}>
+        <span className="block leading-tight font-extrabold tracking-tight">
+          <span className="text-[#0b2a5b] dark:text-white">Uni-</span>
+          <span className="text-[#e3a83f]">Room</span>
+        </span>
         {subtitle && (
           <span className="text-muted-foreground block text-xs leading-tight font-medium">
             {subtitle}

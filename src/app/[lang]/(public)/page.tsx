@@ -1,11 +1,9 @@
-import { ArrowRight, GraduationCap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import { Caveat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
-import angkorWat from "@/assets/angkor-wat.jpg";
-import khmerCorner from "@/assets/decorations/khmer-corner.png";
 import heroImage from "@/assets/hero-students.jpg";
 import { FloatingContact } from "@/components/landing/floating-contact";
 import { HeroSearch } from "@/components/landing/hero-search";
@@ -40,11 +38,6 @@ const fadeLeftAndBottom: CSSProperties = {
   WebkitMaskImage:
     "linear-gradient(to right, transparent, black 14%), linear-gradient(to top, transparent, black 22%)",
   WebkitMaskComposite: "source-in",
-};
-// The Angkor Wat photo at the bottom of the "Start searching" card blends into the navy
-const fadeUp: CSSProperties = {
-  maskImage: "linear-gradient(to top, black 50%, transparent)",
-  WebkitMaskImage: "linear-gradient(to top, black 50%, transparent)",
 };
 const fadeTopAndBottom: CSSProperties = {
   maskImage: "linear-gradient(to bottom, transparent, black 18%, black 70%, transparent)",
@@ -211,7 +204,7 @@ async function TopRooms() {
   return (
     <section
       aria-labelledby="top-rooms-title"
-      className="mt-16 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[minmax(0,0.9fr)_repeat(3,minmax(0,1fr))_minmax(0,0.85fr)]"
+      className="mt-16 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[minmax(0,0.75fr)_repeat(3,minmax(0,1.2fr))]"
     >
       <div className="flex flex-col items-start gap-3 sm:col-span-2 md:col-span-3 lg:col-span-1 lg:py-2">
         <h2
@@ -240,12 +233,26 @@ async function TopRooms() {
           {t("landing.topRooms.viewMore")}
           <ArrowRight aria-hidden />
         </Link>
-        <Link
-          href={`${localePath(locale, "/register")}?role=LANDLORD`}
-          className="text-primary mt-2 text-sm font-medium underline-offset-4 hover:underline"
-        >
-          {t("landing.forLandlords")} {t("landing.forLandlordsCta")}
-        </Link>
+        {/* Visitors sign up as a landlord; landlords go straight to a new listing. Hidden
+            for students and admins: logged-in users can't open the sign-up page (it sends
+            them to search), and their accounts can't post rooms */}
+        {user === null ? (
+          <Link
+            href={`${localePath(locale, "/register")}?role=LANDLORD`}
+            className="text-primary mt-2 text-sm font-medium underline-offset-4 hover:underline"
+          >
+            {t("landing.forLandlords")} {t("landing.forLandlordsCta")}
+          </Link>
+        ) : (
+          user.role === "LANDLORD" && (
+            <Link
+              href={localePath(locale, "/listings/new")}
+              className="text-primary mt-2 text-sm font-medium underline-offset-4 hover:underline"
+            >
+              {t("landing.forLandlordsCta")}
+            </Link>
+          )
+        )}
       </div>
 
       {rooms.map((room) => {
@@ -270,54 +277,6 @@ async function TopRooms() {
           />
         );
       })}
-
-      {/* Navy and gold, like the room cards beside it */}
-      <div className="relative flex flex-col items-center overflow-hidden rounded-[22px] bg-linear-to-b from-[#1646a0] to-[#0f2d68] px-5 pt-8 text-center text-white shadow-[0_10px_30px_rgb(16_45_104/0.18)] ring-1 ring-[#d6ad60]/45 md:col-span-3 lg:col-span-1">
-        {/* Khmer corner ornaments (the bottom-left one, mirrored into the top corners) */}
-        <Image
-          src={khmerCorner}
-          alt=""
-          sizes="80px"
-          className="pointer-events-none absolute top-0 left-0 h-auto w-20 -scale-y-100 opacity-45"
-        />
-        <Image
-          src={khmerCorner}
-          alt=""
-          sizes="80px"
-          className="pointer-events-none absolute top-0 right-0 h-auto w-20 -scale-100 opacity-45"
-        />
-
-        <span className="relative flex size-14 items-center justify-center rounded-full bg-white/10 text-[#f0cd84] ring-2 ring-[#d6ad60]/70">
-          <GraduationCap className="size-7" aria-hidden />
-        </span>
-        <span aria-hidden className="relative mt-4 h-0.5 w-10 rounded-full bg-[#d6ad60]" />
-        <p className="relative mt-4 text-lg leading-snug font-bold">{t("landing.cta.title")}</p>
-        <Link
-          href={moreHref}
-          className="relative mt-5 flex h-11 items-center justify-center gap-1.5 rounded-full bg-linear-to-b from-[#f3d690] to-[#d6ad60] px-5 text-sm font-bold whitespace-nowrap text-[#0f2d68] shadow-lg shadow-black/25 transition hover:brightness-105"
-        >
-          {t("landing.cta.button")}
-          <ArrowRight className="size-4" aria-hidden />
-        </Link>
-
-        {/* A real photo of Angkor Wat at sunrise, fading softly up into the card. The strip
-            grows with the card's width (wide on phones and tablets) and shows the sky and
-            towers, not the dark ground below them */}
-        <div aria-hidden className="pointer-events-none -mx-5 mt-auto self-stretch pt-4">
-          <div
-            className="relative aspect-[13/5] max-h-48 w-full sm:max-h-60 lg:aspect-auto lg:h-40"
-            style={fadeUp}
-          >
-            <Image
-              src={angkorWat}
-              alt=""
-              fill
-              sizes="(min-width: 1024px) 260px, 100vw"
-              className="object-cover object-top sm:object-[50%_14%] lg:object-top"
-            />
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

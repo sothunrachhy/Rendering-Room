@@ -88,11 +88,8 @@ const en = {
       privateBath: "Private bath",
       sharedBath: "Shared bath",
       wifi: "Wi-Fi",
+      inCity: "{district}, Phnom Penh",
       photos: { one: "{count} photo", other: "{count} photos" },
-    },
-    cta: {
-      title: "Find your ideal room near your university today!",
-      button: "Start searching",
     },
     contact: "Contact us",
   },

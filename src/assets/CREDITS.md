@@ -21,3 +21,6 @@ credit on the site too (for example on the About page).
 
 Both look like stock artwork. Before a public launch, check the licence of the original
 files (where they were downloaded from) and add any credit it asks for here.
+
+`decorations/cloud.png`: swirly cloud provided by the RoomFinder team, recoloured with a
+transparent background. Check its source licence before a public launch, as above.
